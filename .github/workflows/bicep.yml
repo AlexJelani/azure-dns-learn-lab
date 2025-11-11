@@ -2,9 +2,17 @@ name: Bicep Deploy
 
 on:
   workflow_dispatch:
+    inputs:
+      lab:
+        description: 'Lab to deploy (01-basic-dns)'
+        required: true
+        default: '01-basic-dns'
+        type: choice
+        options:
+        - '01-basic-dns'
   push:
     branches: [main]
-    paths: ['*.bicep', '*.json']
+    paths: ['labs/*/*.bicep', 'labs/*/*.json']
 
 jobs:
   bicep:
@@ -17,9 +25,19 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         
+    - name: Determine Lab Directory
+      id: lab-dir
+      run: |
+        if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+          echo "lab_dir=labs/${{ github.event.inputs.lab }}" >> $GITHUB_OUTPUT
+        else
+          echo "lab_dir=labs/01-basic-dns" >> $GITHUB_OUTPUT
+        fi
+        
     - name: Deploy Bicep
       run: |
         az deployment sub create \
           --location japaneast \
           --template-file main.bicep \
           --name "github-$(date +%Y%m%d-%H%M%S)"
+      working-directory: ${{ steps.lab-dir.outputs.lab_dir }}

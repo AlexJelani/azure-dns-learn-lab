@@ -2,9 +2,18 @@ name: Terraform Deploy
 
 on:
   workflow_dispatch:
+    inputs:
+      lab:
+        description: 'Lab to deploy (01-basic-dns, 02-alias-records)'
+        required: true
+        default: '01-basic-dns'
+        type: choice
+        options:
+        - '01-basic-dns'
+        - '02-alias-records'
   push:
     branches: [main]
-    paths: ['*.tf']
+    paths: ['labs/*/*.tf']
 
 jobs:
   terraform:
@@ -20,15 +29,29 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         
+    - name: Determine Lab Directory
+      id: lab-dir
+      run: |
+        if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+          echo "lab_dir=labs/${{ github.event.inputs.lab }}" >> $GITHUB_OUTPUT
+        else
+          # For push events, deploy the changed lab
+          echo "lab_dir=labs/01-basic-dns" >> $GITHUB_OUTPUT
+        fi
+        
     - name: Terraform Init
       run: terraform init
+      working-directory: ${{ steps.lab-dir.outputs.lab_dir }}
       
     - name: Terraform Plan
       run: terraform plan
+      working-directory: ${{ steps.lab-dir.outputs.lab_dir }}
       
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main'
       run: terraform apply -auto-approve
+      working-directory: ${{ steps.lab-dir.outputs.lab_dir }}
       
-    - name: Output DNS Info
+    - name: Output Info
       run: terraform output
+      working-directory: ${{ steps.lab-dir.outputs.lab_dir }}
