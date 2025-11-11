@@ -1,3 +1,4 @@
+// Azure DNS Lab - Bicep Configuration
 targetScope = 'subscription'
 
 param location string = 'japaneast'
