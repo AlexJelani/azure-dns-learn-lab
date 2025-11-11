@@ -1,0 +1,25 @@
+name: Bicep Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['*.bicep', '*.json']
+
+jobs:
+  bicep:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+    - name: Deploy Bicep
+      run: |
+        az deployment sub create \
+          --location japaneast \
+          --template-file main.bicep \
+          --name "github-$(date +%Y%m%d-%H%M%S)"

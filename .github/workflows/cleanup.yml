@@ -1,0 +1,17 @@
+name: Cleanup Resources
+
+on:
+  workflow_dispatch:
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+    - name: Delete Resource Group
+      run: az group delete --name learn-dns-rg --yes --no-wait
+      continue-on-error: true
