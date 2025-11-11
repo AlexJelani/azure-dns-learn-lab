@@ -1,3 +1,4 @@
+# Azure DNS Lab - Terraform Configuration
 terraform {
   required_providers {
     azurerm = {
