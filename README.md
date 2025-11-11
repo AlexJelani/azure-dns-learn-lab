@@ -1,6 +1,15 @@
-# Azure DNS Learn Lab
+# Azure DNS Labs Collection
 
-This repository contains Infrastructure as Code (IaC) templates to complete the Azure DNS learning exercise from Microsoft Learn.
+This repository contains multiple Azure DNS labs with Infrastructure as Code (IaC) templates using both Terraform and Bicep.
+
+## 📚 Available Labs
+
+| Lab | Description | Technologies |
+|-----|-------------|-------------|
+| [01 - Basic DNS](labs/01-basic-dns/) | Create DNS zone and A record | Terraform, Bicep |
+| [02 - Alias Records](labs/02-alias-records/) | Load balancer with alias records | Terraform |
+| [03 - Private DNS](labs/03-private-dns/) | Private DNS zones (Coming Soon) | Terraform |
+| [04 - Traffic Manager](labs/04-traffic-manager/) | Global load balancing (Coming Soon) | Terraform |
 
 ## What it creates
 
@@ -8,51 +17,49 @@ This repository contains Infrastructure as Code (IaC) templates to complete the 
 - DNS Zone: `wideworldimports111125.com`
 - A Record: `www` → `10.10.10.10`
 
-## Architecture
+## 🏢 Repository Structure
 
-### Terraform Files
-- `main.tf` - Main Terraform configuration
-- `terraform.tfstate` - State file (auto-generated)
-
-### Bicep Files
-- `main.bicep` - Main Bicep template
-- `dns.bicep` - DNS resources module
-- `main.parameters.json` - Parameters file
-
-### CI/CD Pipelines
-- `.github/workflows/terraform.yml` - Terraform deployment
-- `.github/workflows/bicep.yml` - Bicep deployment
-- `.github/workflows/cleanup.yml` - Resource cleanup
-
-## Deployment Options
-
-### Terraform
-
-```bash
-terraform init
-terraform apply
+```
+azure-dns-labs/
+├── labs/
+│   ├── 01-basic-dns/          # Basic DNS zone and A record
+│   │   ├── main.tf
+│   │   ├── main.bicep
+│   │   └── README.md
+│   ├── 02-alias-records/      # Load balancer with alias records
+│   │   ├── main.tf
+│   │   └── README.md
+│   ├── 03-private-dns/        # Private DNS zones
+│   └── 04-traffic-manager/    # Global load balancing
+├── .github/workflows/     # CI/CD pipelines
+├── .devcontainer/         # Auto-setup tools
+└── README.md
 ```
 
-Verify DNS:
-```bash
-nslookup www.wideworldimports111125.com <name_server_from_output>
-```
+## 🚀 Quick Start
 
-Clean up:
-```bash
-terraform destroy
-```
+1. **Choose a lab** from the table above
+2. **Navigate to lab directory**: `cd labs/01-basic-dns`
+3. **Follow lab-specific README** for deployment instructions
+4. **Clean up** resources after completion
 
-### Bicep
+## 🛠️ Development Environment
 
-```bash
-az deployment sub create --location japaneast --template-file main.bicep
-```
+This repository includes a `.devcontainer` configuration that automatically installs:
+- Terraform
+- Azure CLI
+- VS Code extensions
+- Additional development tools
 
-With parameters:
-```bash
-az deployment sub create --location japaneast --template-file main.bicep --parameters main.parameters.json
-```
+Just launch a Codespace and everything is ready to go!
+
+## 📊 Learning Path
+
+**Recommended order:**
+1. **Basic DNS** - Learn DNS fundamentals
+2. **Alias Records** - Understand dynamic DNS with load balancers
+3. **Private DNS** - Internal name resolution
+4. **Traffic Manager** - Global load balancing and failover
 
 ## CI/CD Setup
 
