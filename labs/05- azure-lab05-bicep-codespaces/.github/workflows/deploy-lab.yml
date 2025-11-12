@@ -1,0 +1,55 @@
+# .github/workflows/deploy-lab.yml
+name: Deploy Lab 05 - Intersite Connectivity
+
+on:
+  workflow_dispatch:
+    inputs:
+      adminPassword:
+        description: 'VM Admin Password (must be complex)'
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write   # Needed for Azure login with OIDC (recommended)
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login to Azure (OIDC - no secrets needed)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy Bicep Template
+        uses: azure/arm-deploy@v1
+        with:
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          resourceGroupName: az104-rg5
+          template: ./main.bicep
+          parameters: adminPassword=${{ inputs.adminPassword }}
+          failOnStdErr: false
+
+      - name: Get Private IPs
+        run: |
+          echo "Fetching private IPs..."
+          CORE_IP=$(az vm show -d -g az104-rg5 -n CoreServicesVM --query "privateIps" -o tsv)
+          MANU_IP=$(az vm show -d -g az104-rg5 -n ManufacturingVM --query "privateIps" -o tsv)
+          echo "CoreServicesVM Private IP: $CORE_IP"
+          echo "ManufacturingVM Private IP: $MANU_IP"
+          echo "Run this from ManufacturingVM:"
+          echo "Test-NetConnection $CORE_IP -Port 3389"
+
+      - name: Auto-Cleanup after 60 minutes
+        if: always()
+        run: |
+          echo "Sleeping 60 minutes then deleting resource group..."
+          sleep 3600
+          az group delete --name az104-rg5 --yes --no-wait || true
+          echo "Cleanup complete."

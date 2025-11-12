@@ -1,0 +1,26 @@
+{
+  "name": "Amazon Q + Gemini Code Assist (Free Tier)",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/aws-cli:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "AmazonWebServices.aws-toolkit@3.79.0",
+        "Google.geminicodeassist@2.48.0",
+        "ms-vscode.vscode-node-azure-pack",
+        "ms-azuretools.vscode-bicep",
+        "GoogleCloudTools.cloudcode",
+        "HashiCorp.terraform",
+        "redhat.vscode-yaml",
+        "ms-python.python"
+      ],
+      "settings": {
+        "geminicodeassist.enable": true,
+        "geminicodeassist.freeTier": true
+      }
+    }
+  },
+  "postCreateCommand": "code --install-extension AmazonWebServices.aws-toolkit@3.79.0 --force && code --install-extension Google.geminicodeassist@2.48.0 --force && code --install-extension ms-vscode.vscode-node-azure-pack --force && code --install-extension HashiCorp.terraform --force || true"
+}
