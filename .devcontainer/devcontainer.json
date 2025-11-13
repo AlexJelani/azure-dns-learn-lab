@@ -7,7 +7,7 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "AmazonWebServices.aws-toolkit@3.79.0",
+        "AmazonWebServices.amazon-q-vscode",
         "Google.geminicodeassist@2.48.0",
         "ms-vscode.vscode-node-azure-pack",
         "ms-azuretools.vscode-bicep",
@@ -22,5 +22,5 @@
       }
     }
   },
-  "postCreateCommand": "code --install-extension AmazonWebServices.aws-toolkit@3.79.0 --force && code --install-extension Google.geminicodeassist@2.48.0 --force && code --install-extension ms-vscode.vscode-node-azure-pack --force && code --install-extension HashiCorp.terraform --force || true"
+  "postCreateCommand": "code --install-extension AmazonWebServices.amazon-q-vscode --force && code --install-extension Google.geminicodeassist@2.48.0 --force && code --install-extension ms-vscode.vscode-node-azure-pack --force && code --install-extension HashiCorp.terraform --force || true"
 }
