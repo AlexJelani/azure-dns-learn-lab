@@ -17,10 +17,10 @@ resource "azurerm_resource_group" "main" {
 }
 
 resource "azurerm_route_table" "public" {
-  name                          = "publictable"
-  location                      = azurerm_resource_group.main.location
-  resource_group_name           = azurerm_resource_group.main.name
-  disable_bgp_route_propagation = false
+  name                        = "publictable"
+  location                    = azurerm_resource_group.main.location
+  resource_group_name         = azurerm_resource_group.main.name
+  bgp_route_propagation_enabled = true
 }
 
 resource "azurerm_route" "production_subnet" {
