@@ -10,14 +10,11 @@ This lab demonstrates how to deploy a Network Virtual Appliance (NVA) in Azure a
         -   `publicsubnet` (10.0.0.0/24)
         -   `privatesubnet` (10.0.1.0/24)
         -   `dmzsubnet` (10.0.2.0/24)
--   **Network Virtual Appliance (NVA)**: An Ubuntu 22.04 LTS VM named `nva` deployed into the `dmzsubnet`.
+-   **Network Virtual Appliance (NVA)**: An Ubuntu 22.04 LTS VM named `nva` deployed into the `dmzsubnet`. This VM has no public IP address.
 -   **IP Forwarding**: Enabled on the NVA's Azure Network Interface and within the NVA operating system.
 
 ## Architecture
 
-```
-Internet ↔ Public Subnet ↔ DMZ Subnet (NVA) ↔ Private Subnet
-```
 
 The NVA in the DMZ subnet will be configured to forward traffic, acting as a router or firewall for traffic between the public and private subnets (though routing rules are not configured in this specific lab, only the NVA's IP forwarding capability).
 
@@ -48,7 +45,7 @@ The NVA in the DMZ subnet will be configured to forward traffic, acting as a rou
     The script will create all necessary resources and configure the NVA.
 
 5.  **Verify Deployment**:
-    After deployment, the script will output the NVA's public IP address. You can try to SSH into the NVA using `ssh azureuser@<NVA_PUBLIC_IP>`.
+    After deployment, you can verify the resources in the Azure portal. To connect to the NVA, you would typically use Azure Bastion or a jumpbox VM in the public subnet, as the NVA has no public IP.
 
 ## Cleanup
 

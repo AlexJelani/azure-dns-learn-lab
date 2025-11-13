@@ -54,8 +54,10 @@ az vm create \
     --vnet-name "$VNET_NAME" \
     --subnet "$DMZ_SUBNET_NAME" \
     --image Ubuntu2204 \
+    --size Standard_B1s \
     --admin-username "$ADMIN_USERNAME" \
     --admin-password "$ADMIN_PASSWORD" \
+    --public-ip-address "" \
     --output none
 
 echo "NVA VM '$NVA_VM_NAME' deployed."
@@ -63,21 +65,11 @@ echo "NVA VM '$NVA_VM_NAME' deployed."
 # 4. Enable IP forwarding for the Azure network interface
 echo "Enabling IP forwarding for the NVA's Azure network interface..."
 
-NICID=$(az vm nic list \
+NICNAME=$(az vm show \
     --resource-group "$RESOURCE_GROUP_NAME" \
-    --vm-name "$NVA_VM_NAME" \
-    --query "[].{id:id}" --output tsv)
-
-if [ -z "$NICID" ]; then
-    echo "Error: Could not retrieve NVA network interface ID."
-    exit 1
-fi
-
-NICNAME=$(az vm nic show \
-    --resource-group "$RESOURCE_GROUP_NAME" \
-    --vm-name "$NVA_VM_NAME" \
-    --nic "$NICID" \
-    --query "{name:name}" --output tsv)
+    --name "$NVA_VM_NAME" \
+    --query "networkProfile.networkInterfaces[0].id" \
+    --output tsv | xargs basename)
 
 if [ -z "$NICNAME" ]; then
     echo "Error: Could not retrieve NVA network interface name."
@@ -102,13 +94,8 @@ az vm run-command invoke \
 
 echo "IP forwarding enabled within the NVA."
 
-NVAIP="$(az vm list-ip-addresses \
-    --resource-group "$RESOURCE_GROUP_NAME" \
-    --name "$NVA_VM_NAME" \
-    --query "[].virtualMachine.network.publicIpAddresses[*].ipAddress" \
-    --output tsv)"
+# Note: The original lab created a public IP. This version does not for better security.
+# If you need to SSH, you would typically use Azure Bastion or a jumpbox in a public subnet.
 
 echo "NVA Lab Deployment Completed Successfully!"
-echo "NVA Public IP Address: $NVAIP"
-echo "You can SSH to the NVA using: ssh $ADMIN_USERNAME@$NVAIP"
-echo "Remember to add a Network Security Group rule if you want to SSH from outside your current network."
+echo "The NVA does not have a public IP address."
