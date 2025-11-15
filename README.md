@@ -14,9 +14,18 @@ This repository contains multiple Azure DNS labs with Infrastructure as Code (Ia
 
 ## What it creates
 
+### DNS Labs (01-04)
 - Resource Group: `learn-dns-rg`
 - DNS Zone: `wideworldimports111125.com`
 - A Record: `www` → `10.10.10.10`
+
+### Storage Lab (07)
+- Resource Group: `az104-rg7`
+- Storage Account: `az104storage[random]` (GRS replication)
+- Blob Container: `data` (private access)
+- File Share: `share1` (50GB, transaction optimized)
+- Virtual Network: `vnet1` with service endpoints
+- Lifecycle Policy: Move to cool storage after 30 days
 
 ## 🏢 Repository Structure
 

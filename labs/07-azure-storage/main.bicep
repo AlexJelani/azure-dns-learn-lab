@@ -2,7 +2,7 @@
 param location string = 'East US'
 
 @description('Storage account name')
-param storageAccountName string = 'az104storage${uniqueString(resourceGroup().id)}'
+param storageAccountName string = 'st${uniqueString(resourceGroup().id)}'
 
 // Resource Group is created externally
 // az group create --name az104-rg7 --location "East US"
@@ -67,18 +67,6 @@ resource blobContainer 'Microsoft.Storage/storageAccounts/blobServices/container
   name: 'data'
   properties: {
     publicAccess: 'None'
-    immutableStorageWithVersioning: {
-      enabled: true
-    }
-  }
-}
-
-// Immutable Storage Policy
-resource immutablePolicy 'Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies@2023-01-01' = {
-  parent: blobContainer
-  name: 'default'
-  properties: {
-    immutabilityPeriodSinceCreationInDays: 180
   }
 }
 
@@ -98,30 +86,8 @@ resource fileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-0
   }
 }
 
-// Storage Account Network Rules
-resource networkRules 'Microsoft.Storage/storageAccounts@2023-01-01' = {
-  name: storageAccount.name
-  location: location
-  sku: storageAccount.sku
-  kind: storageAccount.kind
-  properties: {
-    publicNetworkAccess: 'Enabled'
-    networkAcls: {
-      defaultAction: 'Deny'
-      bypass: 'AzureServices'
-      virtualNetworkRules: [
-        {
-          id: '${virtualNetwork.id}/subnets/default'
-          action: 'Allow'
-        }
-      ]
-    }
-  }
-  dependsOn: [
-    storageAccount
-    virtualNetwork
-  ]
-}
+// Note: Network rules can be configured manually in Azure Portal after deployment
+// to avoid deployment conflicts with container/file share creation
 
 // Management Policy
 resource managementPolicy 'Microsoft.Storage/storageAccounts/managementPolicies@2023-01-01' = {
