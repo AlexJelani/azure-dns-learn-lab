@@ -37,7 +37,7 @@ resource routeTable 'Microsoft.Network/routeTables@2023-04-01' = {
   name: 'publictable'
   location: location
   properties: {
-    bgpRoutePropagationEnabled: true
+    disableBgpRoutePropagation: false
     routes: [
       {
         name: 'productionsubnet'

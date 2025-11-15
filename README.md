@@ -10,6 +10,7 @@ This repository contains multiple Azure DNS labs with Infrastructure as Code (Ia
 | [02 - Alias Records](labs/02-alias-records/) | Load balancer with alias records | Terraform |
 | [03 - Private DNS](labs/03-private-dns/) | Private DNS zones (Coming Soon) | Terraform |
 | [04 - Traffic Manager](labs/04-traffic-manager/) | Global load balancing (Coming Soon) | Terraform |
+| [07 - Azure Storage](labs/07-azure-storage/) | Manage storage accounts, blobs, and file shares | Terraform, Bicep |
 
 ## What it creates
 
@@ -30,7 +31,11 @@ azure-dns-labs/
 │   │   ├── main.tf
 │   │   └── README.md
 │   ├── 03-private-dns/        # Private DNS zones
-│   └── 04-traffic-manager/    # Global load balancing
+│   ├── 04-traffic-manager/    # Global load balancing
+│   └── 07-azure-storage/      # Azure Storage management
+│       ├── main.tf
+│       ├── main.bicep
+│       └── README.md
 ├── .github/workflows/     # CI/CD pipelines
 ├── .devcontainer/         # Auto-setup tools
 └── README.md
@@ -60,6 +65,7 @@ Just launch a Codespace and everything is ready to go!
 2. **Alias Records** - Understand dynamic DNS with load balancers
 3. **Private DNS** - Internal name resolution
 4. **Traffic Manager** - Global load balancing and failover
+5. **Azure Storage** - Storage accounts, blob containers, and file shares
 
 ## CI/CD Setup
 
