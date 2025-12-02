@@ -173,4 +173,4 @@ resource "azurerm_backup_protected_vm" "main" {
   recovery_vault_name = azurerm_recovery_services_vault.main.name
   source_vm_id        = azurerm_linux_virtual_machine.main.id
   backup_policy_id    = azurerm_backup_policy_vm.main.id
-}
+}# Test
