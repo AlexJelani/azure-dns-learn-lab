@@ -23,7 +23,7 @@ resource "random_integer" "suffix" {
 
 # Resource Group
 resource "azurerm_resource_group" "main" {
-  name     = "az104-rg10"
+  name     = "az104-rg10-cicd"
   location = "East US"
 }
 
