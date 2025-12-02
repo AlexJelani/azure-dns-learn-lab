@@ -11,6 +11,7 @@ This repository contains multiple Azure DNS labs with Infrastructure as Code (Ia
 | [03 - Private DNS](labs/03-private-dns/) | Private DNS zones (Coming Soon) | Terraform |
 | [04 - Traffic Manager](labs/04-traffic-manager/) | Global load balancing (Coming Soon) | Terraform |
 | [07 - Azure Storage](labs/07-azure-storage/) | Manage storage accounts, blobs, and file shares | Terraform, Bicep |
+| [10 - Azure Backup](labs/10-azure-backup/) | Protect VMs with Azure Backup | Terraform, Bicep |
 
 ## What it creates
 
@@ -27,6 +28,13 @@ This repository contains multiple Azure DNS labs with Infrastructure as Code (Ia
 - Virtual Network: `vnet1` with service endpoints
 - Lifecycle Policy: Move to cool storage after 30 days
 
+### Backup Lab (10)
+- Resource Group: `az104-rg10`
+- Virtual Machine: `az104-vm1` (Ubuntu 22.04 LTS)
+- Recovery Services Vault: `az104-vault-[random]`
+- Backup Policy: Daily backups with retention
+- VM Protection: Automatic backup configuration
+
 ## 🏢 Repository Structure
 
 ```
@@ -41,7 +49,11 @@ azure-dns-labs/
 │   │   └── README.md
 │   ├── 03-private-dns/        # Private DNS zones
 │   ├── 04-traffic-manager/    # Global load balancing
-│   └── 07-azure-storage/      # Azure Storage management
+│   ├── 07-azure-storage/      # Azure Storage management
+│   │   ├── main.tf
+│   │   ├── main.bicep
+│   │   └── README.md
+│   └── 10-azure-backup/       # VM backup and protection
 │       ├── main.tf
 │       ├── main.bicep
 │       └── README.md
@@ -75,6 +87,7 @@ Just launch a Codespace and everything is ready to go!
 3. **Private DNS** - Internal name resolution
 4. **Traffic Manager** - Global load balancing and failover
 5. **Azure Storage** - Storage accounts, blob containers, and file shares
+6. **Azure Backup** - VM protection and disaster recovery
 
 ## CI/CD Setup
 

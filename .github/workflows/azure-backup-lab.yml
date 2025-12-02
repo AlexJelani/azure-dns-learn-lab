@@ -1,0 +1,88 @@
+name: Azure Backup Lab CI/CD
+
+on:
+  push:
+    branches: [ main ]
+    paths: 
+      - 'labs/10-azure-backup/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'labs/10-azure-backup/**'
+  workflow_dispatch:
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: labs/10-azure-backup
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.5.0
+    
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    - name: Generate SSH Key
+      run: |
+        ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N ""
+        echo "SSH_PUBLIC_KEY=$(cat ~/.ssh/id_rsa.pub)" >> $GITHUB_ENV
+    
+    - name: Terraform Init
+      run: terraform init
+    
+    - name: Terraform Plan
+      run: terraform plan
+    
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/main'
+      run: terraform apply -auto-approve
+    
+    - name: Test VM Connection
+      if: github.ref == 'refs/heads/main'
+      run: |
+        VM_IP=$(terraform output -raw vm_public_ip)
+        ssh -o StrictHostKeyChecking=no adminuser@$VM_IP "hostname && uptime"
+    
+    - name: Verify Backup Protection
+      if: github.ref == 'refs/heads/main'
+      run: |
+        VM_ID=$(az vm show --resource-group az104-rg10 --name az104-vm1 --query id -o tsv)
+        az backup protection check-vm --vm $VM_ID
+    
+    - name: Cleanup (Manual Trigger Only)
+      if: github.event_name == 'workflow_dispatch' && github.event.inputs.cleanup == 'true'
+      run: terraform destroy -auto-approve
+
+  bicep:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    - name: Generate SSH Key
+      run: |
+        ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N ""
+        SSH_KEY=$(cat ~/.ssh/id_rsa.pub)
+        echo "sshPublicKey=$SSH_KEY" > labs/10-azure-backup/params.json
+    
+    - name: Validate Bicep
+      run: |
+        az deployment group validate \
+          --resource-group az104-rg10-test \
+          --template-file labs/10-azure-backup/main.bicep \
+          --parameters @labs/10-azure-backup/params.json
