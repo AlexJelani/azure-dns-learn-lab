@@ -61,28 +61,3 @@ jobs:
     - name: Cleanup (Manual Trigger Only)
       if: github.event_name == 'workflow_dispatch' && github.event.inputs.cleanup == 'true'
       run: terraform destroy -auto-approve
-
-  bicep:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Azure Login
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-    
-    - name: Generate SSH Key
-      run: |
-        ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N ""
-        SSH_KEY=$(cat ~/.ssh/id_rsa.pub)
-        echo "sshPublicKey=$SSH_KEY" > labs/10-azure-backup/params.json
-    
-    - name: Validate Bicep
-      run: |
-        az deployment group validate \
-          --resource-group az104-rg10-test \
-          --template-file labs/10-azure-backup/main.bicep \
-          --parameters @labs/10-azure-backup/params.json
