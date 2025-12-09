@@ -1,12 +1,13 @@
-name: Cost Cleanup
+name: Cost Cleanup (DISABLED)
 
 on:
-  schedule:
-    - cron: '0 9 * * *'  # Daily at 9 AM UTC
-  workflow_dispatch:     # Manual trigger
+  # schedule:
+  #   - cron: '0 9 * * *'  # Daily at 9 AM UTC - DISABLED
+  workflow_dispatch:     # Manual trigger only
 
 jobs:
   cleanup:
+    if: false  # Workflow disabled
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
